@@ -1,5 +1,7 @@
 const config = require('firebase-functions').config()
 
+// TODO - Implement real authorization / authentication
+
 function authorize(req, res, next) {
   let api_key = req.headers['X-API-KEY'] || req.headers['x-api-key']
 

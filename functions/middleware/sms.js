@@ -48,15 +48,6 @@ function validate_environment_variables() {
 //------------------------------------------------------------------------------
 
 function send(message, req, res, next) {
-  const error_messages = []
-
-  if (error_messages.length !== 0) {
-    res.status(400).json({
-      message: 'Message(s) not sent',
-      errors: error_messages
-    })
-  }
-
   const client = twilio(config.twilio.account_sid, config.twilio.auth_token)
 
   const promises = to.map(number => {
