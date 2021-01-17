@@ -1,6 +1,3 @@
-
-# from os import environ
-
 import os, sys
 import configparser
 from twilio.rest import Client
