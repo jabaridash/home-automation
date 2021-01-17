@@ -1,35 +1,46 @@
-const account_sid = process.env.TWILIO_ACCOUNT_SID
-const auth_token = process.env.TWILIO_AUTH_TOKEN
-const from = process.env.TWILIO_PHONE_NUMBER
 const twilio = require('twilio')
+const config = require('firebase-functions').config()
 
-// TODO - Put in environment variable and perse (splitting by comma)
+validate_environment_variables()
 
-const to = [
-  "9142617432",
-  // "9144346312"
-]
+const to = get_phone_numbers()
+
+//------------------------------------------------------------------------------
+
+function get_phone_numbers() {
+  phone_numbers = config.admin.phone_numbers.split(',')
+
+  if (phone_numbers.length < 1) {
+    const message = 'admin.phone_numbers should be a comma delimited string of valid phone numbers'
+    throw new Error(message)
+  }
+
+  return phone_numbers
+}
 
 //------------------------------------------------------------------------------
 
 function validate_environment_variables() {
   const missing_environment_variables = []
 
-  if (!account_sid) {
-    missing_environment_variables.push('TWILIO_ACCOUNT_SID')
+  if (!config.twilio.account_sid) {
+    missing_environment_variables.push('twilio.account_sid')
   }
 
-  if (!auth_token) {
-    missing_environment_variables.push('TWILIO_AUTH_TOKEN')
+  if (!config.twilio.auth_token) {
+    missing_environment_variables.push('twilio.auth_token')
   }
 
-  if(!from) {
-    missing_environment_variables.push('TWILIO_PHONE_NUMBER')
+  if (!config.twilio.phone_number) {
+    missing_environment_variables.push('twilio.phone_number')
+  }
+
+  if (!config.admin.phone_numbers) {
+    missing_environment_variables.push('admin.phone_numbers')
   }
 
   if (missing_environment_variables.length !== 0) {
-    message = `Missing environment variables ${missing_environment_variables.join(",")}`
-
+    const message = `Missing environment variables ${missing_environment_variables.join(",")}`
     throw new Error(message)
   }
 }
@@ -46,10 +57,12 @@ function send(message, req, res, next) {
     })
   }
 
+  const client = twilio(config.twilio.account_sid, config.twilio.auth_token)
+
   const promises = to.map(number => {
-    return twilio(account_sid, auth_token).messages.create({
+    return client.messages.create({
       body: message,
-      from: from,
+      from: config.twilio.phone_number,
       to: number
     })
   })
@@ -60,8 +73,6 @@ function send(message, req, res, next) {
 }
 
 //------------------------------------------------------------------------------
-
-validate_environment_variables()
 
 module.exports = {
   send,
