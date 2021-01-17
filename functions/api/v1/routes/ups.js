@@ -1,14 +1,7 @@
 const sms = require('../../../middleware/sms')
+const router = require('express').Router()
 
-function on_battery(req, res, next) {
-  sms.send('ON BATTERY', req, res, next)
-}
+router.post('/on-battery', (req, res, next) => sms.send('ON BATTERY', req, res, next))
+router.post('/off-battery', (req, res, next) => sms.send('ON BATTERY', req, res, next))
 
-function off_battery(req, res, next) {
-  sms.send('OFF BATTERY', req, res, next)
-}
-
-module.exports = {
-  on_battery,
-  off_battery,
-}
+module.exports = router
