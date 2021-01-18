@@ -1,14 +1,17 @@
 const config = require('firebase-functions').config()
+const http = require('../utility/http')
+
+const API_KEY_HEADER_NAME = 'X-API-KEY'
 
 // TODO - Implement real authorization / authentication
 
 function authorize(req, res, next) {
-  let api_key = req.headers['X-API-KEY'] || req.headers['x-api-key']
+  let api_key = req.headers[API_KEY_HEADER_NAME] || req.headers[API_KEY_HEADER_NAME.toLowerCase()]
 
   if (!api_key) {
-    res.status(404).json({ message: 'Please supply header \'X-API-KEY\''})
+    res.status(http.STATUS_CODES.UNAUTHORIZED).json({ message: `Please supply header '${API_KEY_HEADER_NAME}'`})
   } else if (api_key !== config.api.key) {
-    res.status(404).json({ message: 'Invalid X-API-KEY'})
+    res.status(http.STATUS_CODES.UNAUTHORIZED).json({ message: `Invalid ${API_KEY_HEADER_NAME}`})
   } else {
     next()
   }
