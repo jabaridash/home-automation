@@ -14,7 +14,7 @@ module.exports = {
           "loadpct": { "type": "string" },
           "bcharge": { "type": "string" },
           "timeleft": { "type": "string" },
-          "tonbattery": { "type": "string" },
+          "tonbatt": { "type": "string" },
         },
         "required": [
           "date",
@@ -24,7 +24,7 @@ module.exports = {
           "loadpct",
           "bcharge",
           "timeleft",
-          "tonbattery",
+          "tonbatt",
         ],
       },
     },

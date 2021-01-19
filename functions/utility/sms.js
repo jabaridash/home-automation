@@ -8,7 +8,7 @@ const to = get_phone_numbers()
 //------------------------------------------------------------------------------
 
 function get_phone_numbers() {
-  phone_numbers = config.admin.phone_numbers.split(',')
+  const phone_numbers = config.admin.phone_numbers.split(',')
 
   if (phone_numbers.length < 1) {
     const message = 'admin.phone_numbers should be a comma delimited string of valid phone numbers'
