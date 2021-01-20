@@ -2,6 +2,6 @@ const validation = require('../../../middleware/validation')
 const ups = require('../../../middleware/ups')
 const router = require('express').Router()
 
-router.post('/ups', validation.ups, ups.handle)
+router.post('/ups', validation.ups, ups.save)
 
 module.exports = router

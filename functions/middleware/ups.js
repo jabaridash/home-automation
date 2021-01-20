@@ -1,6 +1,13 @@
 const database = require('../utility/database')
 const http = require('../utility/http')
+const email = require('../utility/email')
 const sms = require('../utility/sms')
+
+//------------------------------------------------------------------------------
+
+function get_email(event) {
+  return `EMAIL MESSAGE`
+}
 
 //------------------------------------------------------------------------------
 
@@ -14,7 +21,8 @@ function get_text_message(event) {
 
 //------------------------------------------------------------------------------
 
-function handle(req, res, next) {
+function save(req, res, next) {
+  email.send(get_email(req.body), "jabari.dash@gmail.com")
   sms.send(get_text_message(req.body))
 
   database.ups_events.save(req.body)
@@ -22,4 +30,4 @@ function handle(req, res, next) {
   .catch(next)
 }
 
-module.exports = { handle }
+module.exports = { save }

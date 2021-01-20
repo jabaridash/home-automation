@@ -10,14 +10,22 @@ const COLLECTION_NAMES = {
 
 //------------------------------------------------------------------------------
 
+async function get_all(collection_name) {
+  return db.collection(collection_name).get().then(snapshot => {
+    return snapshot.docs.map(doc => {
+      const _doc = doc.data()
+      _doc.id = doc.id
+      return _doc
+    })
+  })
+}
+
+//------------------------------------------------------------------------------
+
 async function save(doc, collection_name) {
   return db.collection(collection_name).add(doc).then(saved_document => {
-    console.log(`Document saved to collection: ${collection_name}`)
-
     doc.id = saved_document.id
-
-    console.log(JSON.stringify(doc, null, 2))
-
+    console.log(`Document ${doc.id} saved to collection: ${collection_name}`)
     return doc
   })
 }
@@ -26,6 +34,7 @@ async function save(doc, collection_name) {
 
 module.exports = {
   administrators: {
+    get_all: async () => get_all(COLLECTION_NAMES.ADMINISTRATORS),
     save: async (administrator) => save(administrator, COLLECTION_NAMES.ADMINISTRATORS)
   },
   ups_events: {
