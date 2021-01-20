@@ -1,13 +1,8 @@
+const environment = require('../environment')
 const database = require('../utility/database')
 const http = require('../utility/http')
 const email = require('../utility/email')
 const sms = require('../utility/sms')
-
-//------------------------------------------------------------------------------
-
-function get_email(event) {
-  return `EMAIL MESSAGE`
-}
 
 //------------------------------------------------------------------------------
 
@@ -21,9 +16,59 @@ function get_text_message(event) {
 
 //------------------------------------------------------------------------------
 
+function get_subject(event) {
+  switch (event.type) {
+    case 'onbattery': return `${environment.application_name}: The power has gone out`
+    case 'offbattery': return `${environment.application_name}: The power has been restored`
+    default: return `${environment.application_name}: An event has occured with your UPS`
+  }
+}
+
+//------------------------------------------------------------------------------
+
+function get_email_html(event, administrator) {
+  const status = [
+    `<strong>Status:</strong> ${event.status.status}`,
+    `<strong>Load:</strong> ${event.status.loadpct}`,
+    `<strong>Battery charge:</strong> ${event.status.bcharge}`,
+    `<strong>Time remaining:</strong> ${event.status.timeleft}`,
+    `<strong>Time on battery:</strong> ${event.status.tonbatt}`,
+  ]
+  .map(text => `${text}<br>`)
+  .join('')
+
+  return `
+  <p>Hi ${administrator.name},</p>
+
+  <p>${get_text_message(event)}</p>
+
+  <p>The status of UPS '${event.status.upsname}' follows:</p>
+  ${status}
+
+  <p>Please log into your affected servers to verify that they have responded appropriately.</p>
+  `
+}
+
+//------------------------------------------------------------------------------
+
+async function notify(event) {
+  return database.administrators.get_all().then(administrators => {
+    return administrators.map(administrator => {
+      console.log(`Notifying administrator ${administrator.name} of event: ${event.type}`)
+
+      return Promise.all([
+        email.send(get_email_html(event, administrator), get_subject(event), administrator.email),
+        sms.send(get_text_message(event), administrator.phone_number)
+      ])
+    })
+  })
+}
+
+
+//------------------------------------------------------------------------------
+
 function save(req, res, next) {
-  email.send(get_email(req.body), "jabari.dash@gmail.com")
-  sms.send(get_text_message(req.body))
+  notify(req.body)
 
   database.ups_events.save(req.body)
   .then(doc => res.status(http.STATUS_CODES.OK).json({ message: 'Ok' }))

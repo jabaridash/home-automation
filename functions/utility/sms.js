@@ -3,18 +3,16 @@ const environment = require('../environment')
 
 //------------------------------------------------------------------------------
 
-function send(message) {
+function send(message, to) {
+  console.log(`Sending SMS message`)
+
   const client = twilio(environment.twilio.account_sid, environment.twilio.auth_token)
 
-  const promises = environment.admins.phone_numbers.map(number => {
-    return client.messages.create({
-      body: message,
-      from: environment.twilio.phone_number,
-      to: number
-    })
+  return client.messages.create({
+    body: message,
+    from: environment.twilio.phone_number,
+    to: to
   })
-
-  return Promise.all(promises)
 }
 
 //------------------------------------------------------------------------------
