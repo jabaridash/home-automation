@@ -3,6 +3,11 @@ admin.initializeApp()
 
 const db = admin.firestore()
 
+const COLLECTION_NAMES = {
+  ADMINISTRATORS: 'administrators',
+  UPS_EVENTS: 'ups-events',
+}
+
 //------------------------------------------------------------------------------
 
 async function save(doc, collection_name) {
@@ -20,7 +25,10 @@ async function save(doc, collection_name) {
 //------------------------------------------------------------------------------
 
 module.exports = {
+  administrators: {
+    save: async (administrator) => save(administrator, COLLECTION_NAMES.ADMINISTRATORS)
+  },
   ups_events: {
-    save: async (event) => save(event, 'ups-events')
+    save: async (event) => save(event, COLLECTION_NAMES.UPS_EVENTS)
   }
 }
