@@ -68,9 +68,10 @@ async function notify(event) {
 //------------------------------------------------------------------------------
 
 function save(req, res, next) {
-  notify(req.body)
-
-  database.ups_events.save(req.body)
+  Promise.all([
+    notify(req.body),
+    database.ups_events.save(req.body)
+  ])
   .then(doc => res.status(http.STATUS_CODES.OK).json({ message: 'Ok' }))
   .catch(next)
 }
