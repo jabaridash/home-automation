@@ -59,7 +59,8 @@ function get_environment() {
   const result = validator.validate(config, schema)
 
   if (!result.valid) {
-    throw new Error(JSON.stringify(result, null, 2))
+    const message = 'Required config\n' + JSON.stringify(schema, null, 2)
+    throw new Error(message)
   }
 
   return {
