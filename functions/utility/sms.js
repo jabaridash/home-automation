@@ -1,5 +1,5 @@
 const twilio = require('twilio')
-const environment = require('../configuration')
+const environment = require('../environment')
 
 //------------------------------------------------------------------------------
 

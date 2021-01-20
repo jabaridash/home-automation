@@ -1,4 +1,4 @@
-const config = require('firebase-functions').config()
+const environment = require('../environment')
 const http = require('../utility/http')
 
 const API_KEY_HEADER_NAME = 'X-API-KEY'
@@ -10,7 +10,7 @@ function authorize(req, res, next) {
 
   if (!api_key) {
     res.status(http.STATUS_CODES.UNAUTHORIZED).json({ message: `Please supply header '${API_KEY_HEADER_NAME}'`})
-  } else if (api_key !== config.api.key) {
+  } else if (api_key !== environment.api_key) {
     res.status(http.STATUS_CODES.UNAUTHORIZED).json({ message: `Invalid ${API_KEY_HEADER_NAME}`})
   } else {
     next()

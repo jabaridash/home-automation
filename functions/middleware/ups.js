@@ -15,11 +15,10 @@ function get_text_message(event) {
 //------------------------------------------------------------------------------
 
 function handle(req, res, next) {
-  Promise.all([
-    sms.send(get_text_message(req.body)),
-    database.ups_events.save(req.body),
-  ])
-  .then(() => res.status(http.STATUS_CODES.OK).json({ message: 'Ok' }))
+  sms.send(get_text_message(req.body))
+
+  database.ups_events.save(req.body)
+  .then(doc => res.status(http.STATUS_CODES.OK).json({ message: 'Ok' }))
   .catch(next)
 }
 

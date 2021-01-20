@@ -7,6 +7,13 @@ const validator = new Validator()
 const schema = {
   id: "/config-schema",
   properties: {
+    api: {
+      type: "object",
+      properties: {
+        key: { type: "string" },
+      },
+      required: ["key"]
+    },
     twilio: {
       type: "object",
       properties: {
@@ -21,7 +28,7 @@ const schema = {
       ],
     },
   },
-  required: ["twilio"],
+  required: ["twilio", "api"],
 }
 
 //------------------------------------------------------------------------------
@@ -42,6 +49,7 @@ function get_environment() {
   }
 
   return {
+    api_key: config.api.key,
     twilio: config.twilio,
     admins: {
       phone_numbers: phone_numbers
