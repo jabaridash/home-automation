@@ -5,6 +5,7 @@ const db = admin.firestore()
 
 const COLLECTION_NAMES = {
   ADMINISTRATORS: 'administrators',
+  API_KEYS: 'api-keys',
   UPS_EVENTS: 'ups-events',
 }
 
@@ -33,6 +34,9 @@ async function save(doc, collection_name) {
 //------------------------------------------------------------------------------
 
 module.exports = {
+  api_keys: {
+    get_all: async() => get_all(COLLECTION_NAMES.API_KEYS),
+  },
   administrators: {
     get_all: async () => get_all(COLLECTION_NAMES.ADMINISTRATORS),
     save: async (administrator) => save(administrator, COLLECTION_NAMES.ADMINISTRATORS)
