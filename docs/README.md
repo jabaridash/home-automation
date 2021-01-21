@@ -8,7 +8,7 @@ the line (wall outlet), and devices are then connected to the UPS. That way, if 
 the go uninterrupted (hence the name UPS) - until the UPS runs out of
 battery of course. Monitoring these events can allow us to do the following (before the battery is depleted):
 
-![Architectural diagram](diagrams/ups-events-architectural-diagram.png)
+![Architectural diagram](diagrams/ups-events.png)
 
 1. Detect an event such as an outage or restoration of power.
 2. Notify the owner of the event and the status of the UPS (charge %, load %, et al).
