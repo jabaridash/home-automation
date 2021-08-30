@@ -56,10 +56,30 @@ async function notify(event) {
     return administrators.map(administrator => {
       console.log(`Notifying administrator ${administrator.name} of event: ${event.type}`)
 
-      return Promise.all([
-        email.send(get_email_html(event, administrator), get_subject(event), administrator.email),
-        sms.send(get_text_message(event), administrator.phone_number)
-      ])
+      const promises = []
+
+      if (environment.should_send_email) {
+        promises.push(
+          email.send(
+            get_email_html(event, administrator),
+            get_subject(event),
+            administrator.email
+          ).catch(error => {
+            console.error(`Failed to email administrator: ${administrator.name}\n${error.stack}`)
+          })
+        )
+      }
+
+      if (environment.should_send_sms) {
+        promises.push(
+          sms.send(get_text_message(event), administrator.phone_number)
+          .catch(error => {
+            console.error(`Failed to email administrator: ${administrator.name}\n${error.stack}`)
+          })
+        )
+      }
+
+      return Promise.all(promises)
     })
   })
 }

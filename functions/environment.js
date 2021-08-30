@@ -7,10 +7,22 @@ const validator = new Validator()
 const schema = {
   id: "/config-schema",
   properties: {
-    name: {
+    application: {
       type: "object",
       properties: {
         name: { type: "string" },
+        notification_config: {
+          type: "object",
+          properties: {
+            should_send_email: { type: "boolean" },
+            should_send_sms: { type: "boolean" },
+          },
+          required: [
+            "should_send_email",
+            "should_send_sms",
+          ]
+        },
+        required: ["notification_config"]
       },
       required: ["name"]
     },
@@ -50,7 +62,7 @@ const schema = {
       required: ["service", "auth"]
     }
   },
-  required: ["twilio", "api", "email"],
+  required: ["twilio", "api", "email", "application"],
 }
 
 //------------------------------------------------------------------------------
@@ -68,6 +80,8 @@ function get_environment() {
     api_key: config.api.key,
     twilio: config.twilio,
     email: config.email,
+    should_send_email: config.application.notification_config.should_send_email,
+    should_send_sms: config.application.notification_config.should_send_sms,
   }
 }
 
