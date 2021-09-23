@@ -2,7 +2,6 @@
   "name": "functions",
   "description": "Cloud Functions for Home Automation",
   "scripts": {
-    "build:watch": "tsc -w",
     "start": "firebase emulators:start --inspect-functions 9229",
     "deploy": "firebase deploy"
   },

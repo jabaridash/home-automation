@@ -52,6 +52,9 @@ function get_email_html(event, administrator) {
 //------------------------------------------------------------------------------
 
 async function notify(event) {
+
+  // TODO - Save administrators in variable, throw error is 0 records returned
+
   return database.administrators.get_all().then(administrators => {
     return administrators.map(administrator => {
       console.log(`Notifying administrator ${administrator.name} of event: ${event.type}`)

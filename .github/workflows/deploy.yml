@@ -19,6 +19,7 @@ jobs:
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@v2.0.0
         with:
+          # TODO - Update to use /scripts once deploy is implemented
           args: deploy --only functions -m $GITHUB_SHA
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

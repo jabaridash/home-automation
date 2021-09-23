@@ -3,18 +3,20 @@ const utilities = require('./utilities')
 const configFilePath = `${__dirname}/../functions/.runtimeconfig.json`
 
 const EXIT_CODES = {
-    TOO_FEW_ARGUMENTS: 1,
-    UNRECOGNIZED_OPERATION: 2,
-    FAILED_OPERATION: 3,
     SUCCESS: 0,
+    UNKNOWN: 1,
+    TOO_FEW_ARGUMENTS: 2,
+    UNRECOGNIZED_OPERATION: 3,
+    FAILED_OPERATION: 4,
 }
 
 const FIREBASE_BASE_COMMAND = 'firebase'
-const FIREBASE_FUNCTION_CONFIG_BASE_COMMAND = `${FIREBASE_BASE_COMMAND} functions:config`
+const FIREBASE_FUNCTIONS_BASE_COMMAND = `${FIREBASE_BASE_COMMAND} functions`
+const FIREBASE_FUNCTION_CONFIG_BASE_COMMAND = `${FIREBASE_FUNCTIONS_BASE_COMMAND}:config`
 
 const COMMANDS = {
     FIREBASE: {
-        DEPLOY: `${FIREBASE_BASE_COMMAND} deploy`,
+        DEPLOY: `${FIREBASE_BASE_COMMAND} deploy`, // TODO - Implement
         FUNCTIONS: {
             CONFIG: {
                 GET: `${FIREBASE_FUNCTION_CONFIG_BASE_COMMAND}:get`,
@@ -25,16 +27,22 @@ const COMMANDS = {
     }
 }
 
+// TODO - ADD LOGIC TO VERIFY SCHEMA OF LOCAL AND REMOTE RUNTIME JSON MATCHES
+
 //------------------------------------------------------------------------------
 
+/**
+ * Updates the production runtime configuration to match the local copy.
+ * 
+ * @returns A promise for the async operation.
+ */
 async function setConfig() {
     const config = require(configFilePath);
 
     let values = Object.entries(utilities.flatten(config)).map(entry => {
-        const exceptions = ['true', 'false']
         const key = entry[0]
         const raw_value = entry[1]
-        const value = (typeof raw_value === 'string') && !exceptions.includes(raw_value)
+        const value = (typeof raw_value === 'string')
         ? `"${raw_value}"` 
         : raw_value
 
@@ -47,6 +55,9 @@ async function setConfig() {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Retrieves and logs the runtime configuration to stdout.
+ */
 async function getConfig() {
     return utilities
     .execute(COMMANDS.FIREBASE.FUNCTIONS.CONFIG.GET)
@@ -75,6 +86,8 @@ async function unsetConfig() {
  * Main entry point to program.
  */
 async function main() {
+    let exitCode = EXIT_CODES.UNKNOWN
+
     const operations = {
         'get': getConfig,
         'set': setConfig,
@@ -83,13 +96,12 @@ async function main() {
 
     if (process.argv.length < 3) {
         console.error(`No operation supplied, please provide one of the following: ${Object.keys(operations)}`)
-        exit(EXIT_CODES.TOO_FEW_ARGUMENTS)
+        exitCode = EXIT_CODES.TOO_FEW_ARGUMENTS
     }
 
     const command = process.argv[2]
     const operation = operations[command]
-    let exitCode
-
+    
     if (operation) {
         try {
             await operation()
@@ -104,9 +116,10 @@ async function main() {
         exitCode = EXIT_CODES.UNRECOGNIZED_OPERATION
     }
 
-    exit(exitCode)
+    return exitCode
 }
 
 //------------------------------------------------------------------------------
 
-main()
+// PROGRAM STARTS HERE
+main().then(exit)

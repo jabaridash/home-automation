@@ -13,3 +13,12 @@ battery of course. Monitoring these events can allow us to do the following (bef
 1. Detect an event such as an outage or restoration of power.
 2. Notify the owner of the event and the status of the UPS (charge %, load %, et al).
 3. Gracefully shut down our devices during outage, and power them back on when power is restored.
+
+## TODO
+Things to do:
+
+* Add at least 1 administrator to the database on app startup (API)
+* Update console.log statements to use logger (API)
+* Add meaningful error messages (API)
+* Test (API/Client)
+* Freeze or package Python code for easy installation (Client)
