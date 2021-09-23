@@ -1,0 +1,9 @@
+{
+  "name": "scripts",
+  "scripts": {
+    "config:get": "node runtimeconfig get",
+    "config:set": "node runtimeconfig set",
+    "config:unset": "node runtimeconfig unset",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
