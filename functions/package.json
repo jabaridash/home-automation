@@ -2,11 +2,9 @@
   "name": "functions",
   "description": "Cloud Functions for Home Automation",
   "scripts": {
-    "serve": "firebase emulators:start --only functions",
-    "shell": "firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "build:watch": "tsc -w",
+    "start": "firebase emulators:start --inspect-functions 9229",
+    "deploy": "firebase deploy"
   },
   "engines": {
     "node": "12"
