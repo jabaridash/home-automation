@@ -14,8 +14,8 @@ const schema = {
         notification_config: {
           type: "object",
           properties: {
-            should_send_email: { type: "boolean" },
-            should_send_sms: { type: "boolean" },
+            should_send_email: { type: "string" },
+            should_send_sms: { type: "string" },
           },
           required: [
             "should_send_email",
@@ -74,6 +74,8 @@ function get_environment() {
     const message = 'Required config\n' + JSON.stringify(schema, null, 2)
     throw new Error(message)
   }
+
+  // TODO - CONVERT FROM BOOLEANS TO INTEGERS/BOOLS
 
   return {
     application_name: config.application.name,
